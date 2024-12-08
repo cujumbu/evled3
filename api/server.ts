@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 import { generateTimerGif } from './utils/timerGenerator.js';
 import type { Request, Response } from 'express';
@@ -12,11 +13,14 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Enable CORS
 app.use(cors());
 
 // Serve static files from the dist directory
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, '../../dist')));
 
 // Get environment variables
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -76,7 +80,7 @@ app.get('/api/timer/:id', async (req: Request, res: Response) => {
 
 // Handle client-side routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../../dist', 'index.html'));
 });
 
 app.listen(port, () => {
