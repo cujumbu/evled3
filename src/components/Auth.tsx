@@ -12,6 +12,8 @@ export function Auth() {
       </div>
       <SupabaseAuth
         supabaseClient={supabase}
+        providers={[]}
+        view="sign_in"
         appearance={{
           theme: ThemeSupa,
           variables: {
