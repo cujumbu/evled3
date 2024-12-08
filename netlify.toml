@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "api"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["api/utils/*.ts"]
+
+[build.environment]
+  AWS_LAMBDA_JS_RUNTIME = "nodejs18.x"
+  NODE_OPTIONS = "--enable-source-maps"
+  SUPABASE_URL = "https://wuoaslgdsthfruxsollg.supabase.co"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/timer/*"
+  to = "/.netlify/functions/timer/:splat"
+  status = 200
