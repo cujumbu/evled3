@@ -17,6 +17,7 @@ declare module 'canvas' {
     roundRect(x: number, y: number, width: number, height: number, radius: number): void;
     fillStyle: string | CanvasGradient | CanvasPattern;
     strokeStyle: string | CanvasGradient | CanvasPattern;
+    lineWidth: number;
     fillRect(x: number, y: number, width: number, height: number): void;
     strokeRect(x: number, y: number, width: number, height: number): void;
     font: string;
@@ -32,11 +33,6 @@ declare module 'canvas' {
     translate(x: number, y: number): void;
     rotate(angle: number): void;
     scale(x: number, y: number): void;
-    shadowBlur: number;
-    shadowColor: string;
-    shadowOffsetX: number;
-    shadowOffsetY: number;
-    globalAlpha: number;
     shadowBlur: number;
     shadowColor: string;
     shadowOffsetX: number;
