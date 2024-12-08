@@ -11,9 +11,11 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "types": ["node"],
     "isolatedModules": true,
-    "noEmit": false
+    "noEmit": false,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["api/**/*", "src/lib/**/*", "types/**/*"],
   "exclude": ["node_modules", "dist"]
