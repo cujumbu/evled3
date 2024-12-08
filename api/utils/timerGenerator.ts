@@ -1,6 +1,6 @@
 import GIFEncoder from 'gifencoder';
 import { createCanvas } from 'canvas';
-import { translations } from './translations.js';
+import { translations, type Language } from './translations.js';
 import type { TimerConfig } from './types.js';
 import type { NodeCanvasRenderingContext2D } from 'canvas';
 
@@ -48,10 +48,10 @@ export async function generateTimerGif(timer: TimerConfig): Promise<Buffer> {
 
     // Define time units for display
     const units = [
-      { value: days, label: translations[timer.language || 'en'].days },
-      { value: hours, label: translations[timer.language || 'en'].hours },
-      { value: minutes, label: translations[timer.language || 'en'].minutes },
-      { value: seconds, label: translations[timer.language || 'en'].seconds }
+      { value: days, label: translations[(timer.language || 'en') as Language].days },
+      { value: hours, label: translations[(timer.language || 'en') as Language].hours },
+      { value: minutes, label: translations[(timer.language || 'en') as Language].minutes },
+      { value: seconds, label: translations[(timer.language || 'en') as Language].seconds }
     ];
 
     // Draw each time unit
@@ -106,7 +106,7 @@ function drawTimeUnit(
   } else if (timer.style === 'elegant') {
     ctx.save();
     // Draw semi-transparent background
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.beginPath();
     ctx.roundRect(x - 35, y - 45, 70, 80, 12);
     ctx.fill();
@@ -118,23 +118,28 @@ function drawTimeUnit(
     ctx.restore();
   } else if (timer.style === 'gradient') {
     ctx.save();
-    // Create semi-transparent white background with shadow
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    // Create gradient background
+    const bgGradient = ctx.createLinearGradient(x - 30, y - 40, x + 30, y + 30);
+    bgGradient.addColorStop(0, '#ffffff');
+    bgGradient.addColorStop(1, '#f8f9fa');
+    ctx.fillStyle = bgGradient;
     ctx.beginPath();
     ctx.roundRect(x - 30, y - 40, 60, 70, 8);
     ctx.fill();
     
     // Add subtle shadow
     ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 4;
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 2;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.stroke();
     ctx.restore();
     
     // Create gradient effect
     const gradient = ctx.createLinearGradient(x - 30, y - 40, x + 30, y + 30);
     gradient.addColorStop(0, timer.color);
-    gradient.addColorStop(1, adjustColor(timer.color, 20));
+    gradient.addColorStop(1, adjustColor(timer.color, 30));
     ctx.fillStyle = gradient;
   }
 
@@ -142,8 +147,10 @@ function drawTimeUnit(
   if (timer.style === 'neon') {
     // Enhanced neon text effect
     ctx.fillStyle = timer.color;
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 15;
     ctx.shadowColor = timer.color;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
   } else if (timer.style === 'gradient') {
     // Keep gradient fill
     ctx.fillStyle = ctx.fillStyle;
@@ -172,7 +179,7 @@ function getFontStyle(style: TimerConfig['style']): string {
   switch (style) {
     case 'neon': return 'bold 24px Arial';
     case 'classic': return 'bold 24px Arial';
-    case 'elegant': return 'bold 26px Arial';
+    case 'elegant': return 'bold 24px Arial';
     default: return 'bold 24px Arial';
   }
 }
