@@ -8,7 +8,7 @@ import type { Language } from '../lib/translations';
 
 export function TimerGenerator() {
   const [endDate, setEndDate] = React.useState<Date>(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-  const [timezone, setTimezone] = React.useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [timezone, setTimezone] = React.useState('UTC');
   const [style, setStyle] = React.useState<'modern' | 'minimal' | 'classic' | 'neon' | 'gradient' | 'elegant'>('modern');
   const [color, setColor] = React.useState('#3B82F6');
   const [language, setLanguage] = React.useState<Language>('en');
