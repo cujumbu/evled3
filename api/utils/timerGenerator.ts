@@ -22,8 +22,8 @@ export async function generateTimerGif(timer: TimerConfig): Promise<Buffer> {
 
   // Generate frames (we'll create 60 frames for smooth animation)
   for (let i = 0; i < 60; i++) {
-    // Calculate time for this frame
-    const now = new Date().getTime() + (i * 1000);
+    // Calculate time for this frame in the specified timezone
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: timer.timezone })).getTime() + (i * 1000);
     const distance = new Date(timer.end_date).getTime() - now;
 
     // Calculate time units
