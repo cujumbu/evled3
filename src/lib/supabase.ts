@@ -65,3 +65,12 @@ export async function getUserTimers() {
   if (error) throw error;
   return data;
 }
+
+export async function deleteTimer(id: string) {
+  const { error } = await supabase
+    .from('timers')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+}
