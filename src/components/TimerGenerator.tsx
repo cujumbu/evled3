@@ -3,10 +3,12 @@ import { Calendar, Clock, Code } from 'lucide-react';
 import { TimerPreview } from './TimerPreview';
 import { EmbedCodeGenerator } from './EmbedCodeGenerator';
 import { createTimer } from '../lib/supabase';
+import { getTimezones } from '../lib/timezones';
 import type { Language } from '../lib/translations';
 
 export function TimerGenerator() {
   const [endDate, setEndDate] = React.useState<Date>(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  const [timezone, setTimezone] = React.useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [style, setStyle] = React.useState<'modern' | 'minimal' | 'classic' | 'neon' | 'gradient' | 'elegant'>('modern');
   const [color, setColor] = React.useState('#3B82F6');
   const [language, setLanguage] = React.useState<Language>('en');
@@ -18,6 +20,7 @@ export function TimerGenerator() {
       setIsGenerating(true);
       const timer = await createTimer({
         end_date: endDate.toISOString(),
+        timezone,
         style,
         color,
         language,
@@ -57,6 +60,20 @@ export function TimerGenerator() {
                 value={endDate.toISOString().slice(0, 16)}
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Timezone</label>
+              <select
+                className="w-full px-3 py-2 border rounded-lg"
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+              >
+                {getTimezones().map((tz) => (
+                  <option key={tz.value} value={tz.value}>
+                    {tz.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Style</label>
