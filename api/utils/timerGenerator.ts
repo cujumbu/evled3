@@ -23,8 +23,11 @@ export async function generateTimerGif(timer: TimerConfig): Promise<Buffer> {
   // Generate frames (we'll create 60 frames for smooth animation)
   for (let i = 0; i < 60; i++) {
     // Calculate time for this frame in the specified timezone
-    const now = new Date(new Date().toLocaleString('en-US', { timeZone: timer.timezone })).getTime() + (i * 1000);
-    const distance = new Date(timer.end_date).getTime() - now;
+    const now = new Date();
+    const targetNow = new Date(now.toLocaleString('en-US', { timeZone: timer.timezone }));
+    const targetOffset = targetNow.getTimezoneOffset();
+    const utcNow = new Date(targetNow.getTime() - targetOffset * 60000);
+    const distance = new Date(timer.end_date).getTime() - (utcNow.getTime() + (i * 1000));
 
     // Calculate time units
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
