@@ -2,14 +2,23 @@ import React, { useContext } from 'react';
 import { TimerGenerator } from './components/TimerGenerator';
 import { Dashboard } from './components/Dashboard';
 import { Auth } from './components/Auth';
-import { AuthContext } from './components/AuthProvider';
-import { Clock, Sparkles, Shield, Zap, LayoutDashboard } from 'lucide-react';
+import { AuthContext, type AuthContextType } from './components/AuthProvider';
+import { Clock, Sparkles, Shield, Zap, LayoutDashboard, LogOut } from 'lucide-react';
+import { supabase } from './lib/supabase';
 
 type View = 'create' | 'dashboard';
 
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext) as AuthContextType;
   const [view, setView] = React.useState<View>('create');
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -31,28 +40,39 @@ function App() {
               </h1>
             </div>
             {user && (
-              <div className="flex gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setView('create')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      view === 'create'
+                        ? 'bg-indigo-50 text-indigo-600'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Clock className="w-4 h-4" />
+                    Create Timer
+                  </button>
+                  <button
+                    onClick={() => setView('dashboard')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      view === 'dashboard'
+                        ? 'bg-indigo-50 text-indigo-600'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </button>
+                </div>
+                <div className="h-6 w-px bg-gray-200"></div>
                 <button
-                  onClick={() => setView('create')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    view === 'create'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                  title="Logout"
                 >
-                  <Clock className="w-4 h-4" />
-                  Create Timer
-                </button>
-                <button
-                  onClick={() => setView('dashboard')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    view === 'dashboard'
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             )}
