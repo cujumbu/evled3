@@ -63,6 +63,16 @@ export const handler: Handler = async (event) => {
       };
     }
 
+    // Increment view counter
+    const { error: updateError } = await supabase
+      .from('timers')
+      .update({ views: timer.views + 1 })
+      .eq('id', id);
+
+    if (updateError) {
+      console.error('Error updating view count:', updateError);
+    }
+
     // Initialize GIF encoder
     const width = 400;
     const height = 120;
