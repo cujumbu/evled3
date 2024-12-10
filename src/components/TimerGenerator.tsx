@@ -41,7 +41,7 @@ export function TimerGenerator() {
           Timer Preview
         </h2>
         <div className="flex justify-center p-8 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100">
-          <TimerPreview endDate={endDate} style={style} color={color} language={language} />
+          <TimerPreview endDate={endDate} style={style} color={color} language={language} timezone={timezone} />
         </div>
       </div>
 
