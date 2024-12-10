@@ -1,15 +1,17 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { translations, type Language } from '../lib/translations';
+import { formatInTimeZone } from '../lib/timezones';
 
 interface TimerPreviewProps {
   endDate: Date;
   style: 'modern' | 'minimal' | 'classic' | 'neon' | 'gradient' | 'elegant';
   color: string;
-  language?: Language;
+  language: Language;
+  timezone?: string;
 }
 
-export function TimerPreview({ endDate, style, color, language = 'en' }: TimerPreviewProps) {
+export function TimerPreview({ endDate, style, color, language, timezone = 'UTC' }: TimerPreviewProps) {
   const [timeLeft, setTimeLeft] = React.useState({
     days: 0,
     hours: 0,
@@ -19,7 +21,7 @@ export function TimerPreview({ endDate, style, color, language = 'en' }: TimerPr
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      const now = new Date().getTime();
+      const now = formatInTimeZone(new Date(), timezone);
       const distance = endDate.getTime() - now;
       
       setTimeLeft({
@@ -31,7 +33,6 @@ export function TimerPreview({ endDate, style, color, language = 'en' }: TimerPr
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [endDate]);
 
   const renderTimeUnit = (value: number, key: keyof typeof translations[Language]) => (
     <div className={`flex flex-col items-center ${getTimeUnitStyle()}`}>
