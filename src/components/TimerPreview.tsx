@@ -33,6 +33,7 @@ export function TimerPreview({ endDate, style, color, language, timezone = 'UTC'
     }, 1000);
 
     return () => clearInterval(timer);
+  }, [endDate, timezone]);
 
   const renderTimeUnit = (value: number, key: keyof typeof translations[Language]) => (
     <div className={`flex flex-col items-center ${getTimeUnitStyle()}`}>
