@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
 import { TimerGenerator } from './components/TimerGenerator';
+import { Dashboard } from './components/Dashboard';
 import { Auth } from './components/Auth';
 import { AuthContext } from './components/AuthProvider';
-import { Clock, Sparkles, Shield, Zap } from 'lucide-react';
+import { Clock, Sparkles, Shield, Zap, LayoutDashboard } from 'lucide-react';
+
+type View = 'create' | 'dashboard';
 
 function App() {
   const { user, loading } = useContext(AuthContext);
+  const [view, setView] = React.useState<View>('create');
 
   if (loading) {
     return (
@@ -19,11 +23,39 @@ function App() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center gap-2">
-            <Clock className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-              EVLED Timer
-            </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-8 h-8 text-indigo-600" />
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                EVLED Timer
+              </h1>
+            </div>
+            {user && (
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setView('create')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    view === 'create'
+                      ? 'bg-indigo-50 text-indigo-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Clock className="w-4 h-4" />
+                  Create Timer
+                </button>
+                <button
+                  onClick={() => setView('dashboard')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    view === 'dashboard'
+                      ? 'bg-indigo-50 text-indigo-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </button>
+              </div>
+            )}
           </div>
           <p className="mt-2 text-gray-600">
             Create beautiful countdown timers for your email campaigns and promotions
@@ -70,7 +102,11 @@ function App() {
           ))}
         </div>
 
-        {user ? <TimerGenerator /> : <Auth />}
+        {user ? (
+          view === 'create' ? <TimerGenerator /> : <Dashboard />
+        ) : (
+          <Auth />
+        )}
       </main>
 
       <footer className="border-t mt-24 bg-gray-50">
