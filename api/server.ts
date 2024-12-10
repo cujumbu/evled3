@@ -59,6 +59,16 @@ app.get('/api/timer/:id', async (req: Request, res: Response) => {
       });
     }
 
+    // Increment view counter
+    const { error: updateError } = await supabase
+      .from('timers')
+      .update({ views: timer.views + 1 })
+      .eq('id', id);
+
+    if (updateError) {
+      console.error('Error updating view count:', updateError);
+    }
+
     const gifBuffer = await generateTimerGif(timer);
 
     // Set response headers
