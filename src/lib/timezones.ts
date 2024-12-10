@@ -5,21 +5,21 @@ export interface Timezone {
 
 // List of common timezones with their UTC offsets
 const TIMEZONE_LIST: Timezone[] = [
-  { value: 'UTC', label: 'UTC (GMT+0)' },
-  { value: 'America/New_York', label: 'New York (GMT-4)' },
-  { value: 'America/Los_Angeles', label: 'Los Angeles (GMT-7)' },
-  { value: 'America/Chicago', label: 'Chicago (GMT-5)' },
-  { value: 'America/Toronto', label: 'Toronto (GMT-4)' },
-  { value: 'Europe/London', label: 'London (GMT+1)' },
-  { value: 'Europe/Paris', label: 'Paris (GMT+2)' },
-  { value: 'Europe/Berlin', label: 'Berlin (GMT+2)' },
-  { value: 'Europe/Moscow', label: 'Moscow (GMT+3)' },
-  { value: 'Asia/Dubai', label: 'Dubai (GMT+4)' },
-  { value: 'Asia/Singapore', label: 'Singapore (GMT+8)' },
-  { value: 'Asia/Tokyo', label: 'Tokyo (GMT+9)' },
-  { value: 'Asia/Shanghai', label: 'Shanghai (GMT+8)' },
-  { value: 'Australia/Sydney', label: 'Sydney (GMT+10)' },
-  { value: 'Pacific/Auckland', label: 'Auckland (GMT+12)' }
+  { value: 'UTC', label: 'UTC' },
+  { value: 'America/New_York', label: 'New York' },
+  { value: 'America/Los_Angeles', label: 'Los Angeles' },
+  { value: 'America/Chicago', label: 'Chicago' },
+  { value: 'America/Toronto', label: 'Toronto' },
+  { value: 'Europe/London', label: 'London' },
+  { value: 'Europe/Paris', label: 'Paris' },
+  { value: 'Europe/Berlin', label: 'Berlin' },
+  { value: 'Europe/Moscow', label: 'Moscow' },
+  { value: 'Asia/Dubai', label: 'Dubai' },
+  { value: 'Asia/Singapore', label: 'Singapore' },
+  { value: 'Asia/Tokyo', label: 'Tokyo' },
+  { value: 'Asia/Shanghai', label: 'Shanghai' },
+  { value: 'Australia/Sydney', label: 'Sydney' },
+  { value: 'Pacific/Auckland', label: 'Auckland' }
 ];
 
 export function getTimezones(): Timezone[] {
@@ -27,16 +27,19 @@ export function getTimezones(): Timezone[] {
   
   return TIMEZONE_LIST.map((tz: Timezone) => {
     try {
-      // Add current time to the label
-      const timeStr = now.toLocaleTimeString('en-US', { 
+      // Get the timezone offset
+      const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone: tz.value,
-        hour: '2-digit',
-        minute: '2-digit'
+        timeZoneName: 'longOffset',
+        hour12: false,
+        hour: 'numeric'
       });
+      const timeStr = formatter.format(now);
+      const offset = timeStr.split(' ').pop() || '';
       
       return {
         value: tz.value,
-        label: `${tz.label} (${timeStr})`
+        label: `${tz.label} (${offset})`
       };
     } catch (error) {
       // Fallback if timezone is not supported
@@ -46,5 +49,8 @@ export function getTimezones(): Timezone[] {
 }
 
 export function formatInTimeZone(date: Date, timeZone: string): number {
-  return new Date(date.toLocaleString('en-US', { timeZone })).getTime();
+  const targetDate = new Date(date.toLocaleString('en-US', { timeZone }));
+  const targetOffset = targetDate.getTimezoneOffset();
+  const utcDate = new Date(targetDate.getTime() - targetOffset * 60000);
+  return utcDate.getTime();
 }
